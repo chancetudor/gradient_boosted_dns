@@ -26,7 +26,7 @@ Utilize large-scale pDNS data as a training set, sourced from the following sour
 
 5. [AirVPN malware blocklist](https://airvpn.org/api/dns_lists/?code=air_malware&block=0.0.0.0&style=domains)
 
-I'll utilize the dataset generation code from [[2]](#2) to enrich my domains with additional features.
+I'll utilize the dataset generation code from [[2]](#2) to enrich my domains with additional features. I will have to modify this slightly.
 
 ### Model
 
