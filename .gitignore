@@ -153,3 +153,4 @@ cython_debug/
 
 # Project data files
 # data/
+.DS_Store

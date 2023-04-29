@@ -8,7 +8,7 @@ Personal project to create a machine learning model to classify, in near-real ti
 
 Utilize large-scale pDNS data as a training set, sourced from the following sources:
 
-1. [Tranco top 1m domains](https://tranco-list.eu/)
+1. [Tranco top 1m domains](https://tranco-list.eu/) [[3]](#3)
 
     - Note that we are assuming that these domains are legitimate, so we use this dataset as our negative class training data
 
@@ -20,9 +20,11 @@ Utilize large-scale pDNS data as a training set, sourced from the following sour
 
     - These datasets are slightly old (2020), but it's the most recent dataset available from SANS
 
-4. [URLHaus](https://urlhaus.abuse.ch/browse/)
+4. [oisd blocklist](https://oisd.nl/)
 
-    - If needed, I'll pull additional malicious domains from URLHaus
+    - The big blocklist, specifically
+
+5. [AirVPN malware blocklist](https://airvpn.org/api/dns_lists/?code=air_malware&block=0.0.0.0&style=domains)
 
 I'll utilize the dataset generation code from [[2]](#2) to enrich my domains with additional features.
 
@@ -37,3 +39,6 @@ Alhogail, A., Al-Turaiki, I. (2022). Improved Detection of Malicious Domain Name
 
 <a id="2">[2]</a>
 Marques, C., Malta, S., & Magalhães, J. A. (2021). DNS dataset for malicious domains detection. Data in Brief, 38, 107342. <https://doi.org/10.1016/j.dib.2021.107342>
+
+<a id="3">[3]</a>
+Victor Le Pochat, Tom Van Goethem, Samaneh Tajalizadehkhoob, Maciej Korczyński, and Wouter Joosen. 2019. "Tranco: A Research-Oriented Top Sites Ranking Hardened Against Manipulation," Proceedings of the 26th Annual Network and Distributed System Security Symposium (NDSS 2019). <https://doi.org/10.14722/ndss.2019.23386>
