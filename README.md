@@ -30,7 +30,17 @@ I'll utilize the dataset generation code from [[2]](#2) to enrich my domains wit
 
 ### Model
 
-I will use gradient boosted trees for this project, due to their performance as suggested in [[1]](#1). Once the model is trained, it will sit on the recursive resolver (Unbound) and periodically poll the PiHole cache to classify domains recently seen. Those domains that are classified as malicious will be automatically added to the PiHole block list. I have a dedicated machine that acts as my PiHole and run Unbound on that same machine.
+I will use gradient boosted trees for this project, due to their performance as suggested in [[1]](#1). In addition, GBTs have low hardware ovehead and are trained quickly. I will use the authors' initial hyperparameters: "...the learning rate is set to 0.1, tolerance for the early stopping to 0.0001, the quality of split is measured using Friedman mean squared error, and the loss function to be optimized is set to deviance, which refers to logistic regression." Also per [[1]](#1), I will use just six features: Numeric Sequence, Numeric Ratio, Strange Characters, Consonant Ratio, Vowel Ratio, and Domain Length. The authors of [[1]](#1) suggest that they found these 5 features (Numeric Sequence, Numeric Ratio, Strange Characters, Consonant Ratio, Vowel Ratio) most important, plus DNS record type. As I did not have access to DNS record types for my training data, I have opted to not include this and instead replace it with domain length, which was a top 10 most important feature for the authors
+
+I will use the following performance measures:
+
+- accuracy = TP + TN / TP + TN + FP + FN
+- precision (P) = TP / TP + FP
+- false positive rate (FPR) = FP / FP + TN
+- true positive rate (TPR) = TP / TP + FN
+- F-measure = 2 *P* TPR / P + DR
+
+Once the model is trained, it will sit on the recursive resolver (Unbound) and periodically poll the PiHole cache to classify domains recently seen. Those domains that are classified as malicious will be automatically added to the PiHole block list. I have a dedicated machine that acts as my PiHole and run Unbound on that same machine.
 
 ## References
 
