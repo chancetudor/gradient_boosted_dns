@@ -28,19 +28,21 @@ Utilize large-scale pDNS data as a training set, sourced from the following sour
 
 I'll utilize the dataset generation code from [[2]](#2) to enrich my domains with additional features. I will have to modify this slightly.
 
-The training, validation, and test split will be as follows:
+The training, validation, and test split was originally as follows:
 
 - Training dataset: ~1,846,000 records (80% of the overall dataset)
-  - Positive class: ~921,000 records
-  - Negative class: ~925,000 records
 
 - Validation dataset: ~231,000 records (10% of the overall dataset)
-  - Positive class: ~115,000 records
-  - Negative class: ~116,000 records
 
 - Test dataset: ~231,000 records (10% of the overall dataset)
-  - Positive class: ~115,000 records
-  - Negative class: ~116,000 records
+
+However, due to overfitting seen in the original model run, I am decreasing the splits as follows:
+
+- Training dataset: ~1,546,000 records (67% of the overall dataset)
+
+- Validation dataset: ~300,000 records (13% of the overall dataset)
+
+- Test dataset: ~461,000 records (20% of the overall dataset)
 
 ### Model
 
