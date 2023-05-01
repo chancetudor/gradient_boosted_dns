@@ -115,7 +115,7 @@ def main():
         "n_jobs": -1,
     }
     model = train_model(X_train, y_train, train_params)
-
+    # TODO use xgboost.evals_result() instead of scikit learn grid search
     tuned_params = tune_model(model, X_val, y_val)
     # retrain using better parameters
     tuned_model = train_model(X_train, y_train, tuned_params)
