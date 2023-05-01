@@ -18,7 +18,7 @@ Utilize large-scale pDNS data as a training set, sourced from the following sour
 
 3. SANS suspicious domains ([low](https://web.archive.org/web/20200503151842/https://www.dshield.org/feeds/suspiciousdomains_Low.txt), [medium](https://web.archive.org/web/20190412151141/https://dshield.org/feeds/suspiciousdomains_Medium.txt), [high](https://web.archive.org/web/20170617154646/https://secure.dshield.org/feeds/suspiciousdomains_High.txt))
 
-    - These datasets are slightly old (2020), but it's the most recent dataset available from SANS
+    - These datasets are slightly old (2020), but they're the most recent datasets available from SANS
 
 4. [oisd blocklist](https://oisd.nl/)
 
@@ -28,19 +28,42 @@ Utilize large-scale pDNS data as a training set, sourced from the following sour
 
 I'll utilize the dataset generation code from [[2]](#2) to enrich my domains with additional features. I will have to modify this slightly.
 
+The training, validation, and test split will be as follows:
+
+- Training dataset: ~1,846,000 records (80% of the overall dataset)
+  - Positive class: ~921,000 records
+  - Negative class: ~925,000 records
+
+- Validation dataset: ~231,000 records (10% of the overall dataset)
+  - Positive class: ~115,000 records
+  - Negative class: ~116,000 records
+
+- Test dataset: ~231,000 records (10% of the overall dataset)
+  - Positive class: ~115,000 records
+  - Negative class: ~116,000 records
+
 ### Model
 
-I will use gradient boosted trees for this project, due to their performance as suggested in [[1]](#1). In addition, GBTs have low hardware ovehead and are trained quickly. I will use the authors' initial hyperparameters: "...the learning rate is set to 0.1, tolerance for the early stopping to 0.0001, the quality of split is measured using Friedman mean squared error, and the loss function to be optimized is set to deviance, which refers to logistic regression." Also per [[1]](#1), I will use just six features: Numeric Sequence, Numeric Ratio, Strange Characters, Consonant Ratio, Vowel Ratio, and Domain Length. The authors of [[1]](#1) suggest that they found these 5 features (Numeric Sequence, Numeric Ratio, Strange Characters, Consonant Ratio, Vowel Ratio) most important, plus DNS record type. As I did not have access to DNS record types for my training data, I have opted to not include this and instead replace it with domain length, which was a top 10 most important feature for the authors
+I will use gradient boosted trees for this project, due to their performance as suggested in [[1]](#1). In addition, GBTs have low hardware ovehead and are trained quickly. I will use the authors' initial hyperparameters: "...the learning rate is set to 0.1, tolerance for the early stopping to 0.0001, the quality of split is measured using Friedman mean squared error, and the loss function to be optimized is set to deviance, which refers to logistic regression." Also per [[1]](#1), I will use just six features:
+
+1. Domain Length,
+2. Strange Character Count,
+3. Numeric Sequence,
+4. Numeric Ratio,
+5. Consonant Ratio, and
+6. Vowel Ratio
+
+The authors of [[1]](#1) suggest that they found these 5 features (Numeric Sequence, Numeric Ratio, Strange Characters, Consonant Ratio, Vowel Ratio) most important, plus DNS record type. As I did not have access to DNS record types for my training data, and my resolver primarily deals with A record requests (and does not handle IPv6) I have opted to not include this and instead replace it with domain length, which was a top 10 most important feature for the authors. Unfortunately, for many of the authors' feature importance measures, DNS record type was at the top, so my model may have lower performance without being trained on record type.
 
 I will use the following performance measures:
 
-- accuracy = TP + TN / TP + TN + FP + FN
+- accuracy = (TP + TN) / TP + TN + FP + FN
 - precision (P) = TP / TP + FP
 - false positive rate (FPR) = FP / FP + TN
 - true positive rate (TPR) = TP / TP + FN
-- F-measure = 2 *P* TPR / P + DR
+- F-measure = (2 x P x TPR) / P + DR
 
-Once the model is trained, it will sit on the recursive resolver (Unbound) and periodically poll the PiHole cache to classify domains recently seen. Those domains that are classified as malicious will be automatically added to the PiHole block list. I have a dedicated machine that acts as my PiHole and run Unbound on that same machine.
+Once the model is trained, it will sit on the recursive resolver (Unbound) and periodically poll the PiHole cache to classify domains recently seen. Those domains that are classified as malicious will be automatically added to the PiHole block list. I have a dedicated machine that acts as both my PiHole and recursive resolver.
 
 ## References
 
