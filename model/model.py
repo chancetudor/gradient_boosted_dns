@@ -36,8 +36,8 @@ def preprocess_data(
 def train_model(
     X_train: pd.DataFrame,
     y_train: pd.DataFrame,
-    X_val: pd.DataFrame,
-    y_val: pd.DataFrame,
+    # X_val: pd.DataFrame,
+    # y_val: pd.DataFrame,
     params: dict,
 ) -> XGBClassifier:
     print("*** TRAINING ***")
@@ -45,7 +45,7 @@ def train_model(
     model.fit(
         X_train,
         y_train,
-        eval_set=[(X_train, y_train), (X_val, y_val)],
+        # eval_set=[(X_train, y_train)],
         verbose=True,
     )
 
@@ -70,7 +70,7 @@ def tune_model(model: XGBClassifier, X_val: pd.DataFrame, y_val: pd.DataFrame) -
         estimator=model,
         param_grid=param_grid,
         cv=cv,
-        n_jobs=4,
+        n_jobs=-1,
         scoring="accuracy",
     )
 
@@ -112,13 +112,13 @@ def main():
         "early_stopping_rounds": 10,
         "booster": "gbtree",
         "grow_policy": "lossguide",
-        "n_jobs": 4,
+        "n_jobs": -1,
     }
-    model = train_model(X_train, y_train, X_val, y_val, train_params)
+    model = train_model(X_train, y_train, train_params)
 
     tuned_params = tune_model(model, X_val, y_val)
     # retrain using better parameters
-    tuned_model = train_model(X_train, y_train, X_val, y_val, tuned_params)
+    tuned_model = train_model(X_train, y_train, tuned_params)
 
     evaluate_model(tuned_model, X_test, y_test)
 
