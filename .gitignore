@@ -160,3 +160,6 @@ log/debug.log
 
 # Mac-related
 .DS_Store
+
+# VS Code related
+.vscode
