@@ -46,7 +46,7 @@ However, due to overfitting seen in the original model run, I am decreasing the 
 
 ### Model
 
-I will use gradient boosted trees for this project, due to their performance as suggested in [[1]](#1). In addition, GBTs have low hardware ovehead and are trained quickly. I will use the authors' initial hyperparameters: "...the learning rate is set to 0.1, tolerance for the early stopping to 0.0001, the quality of split is measured using Friedman mean squared error, and the loss function to be optimized is set to deviance, which refers to logistic regression." Also per [[1]](#1), I will use just six features:
+I will use gradient boosted trees for this project, due to their performance as suggested in [[1]](#1). In addition, GBTs have low hardware ovehead and are trained quickly. I will use the authors' initial hyperparameters: "...the learning rate is set to 0.1, tolerance for the early stopping to 0.0001, the quality of split is measured using Friedman mean squared error, and the loss function to be optimized is set to deviance, which refers to logistic regression." Also per [[1]](#1), at first I used just six features:
 
 1. Domain Length,
 2. Strange Character Count,
@@ -57,6 +57,20 @@ I will use gradient boosted trees for this project, due to their performance as 
 
 The authors of [[1]](#1) suggest that they found these 5 features (Numeric Sequence, Numeric Ratio, Strange Characters, Consonant Ratio, Vowel Ratio) most important, plus DNS record type. As I did not have access to DNS record types for my training data, and my resolver primarily deals with A record requests (and does not handle IPv6) I have opted to not include this and instead replace it with domain length, which was a top 10 most important feature for the authors. Unfortunately, for many of the authors' feature importance measures, DNS record type was at the top, so my model may have lower performance without being trained on record type.
 
+However, I then increased the number of features in an attempt to gain extra performance as I was not seeing the performance that I wanted. The final number of features I used are the following:
+
+1. Domain Length
+2. Strange Character Count
+3. Domain Entropy
+4. Numeric Sequence
+5. Numeric Ratio
+6. Consonant Sequence
+7. Consonant Ratio
+8. Vowel Sequence
+9. Vowel Ratio
+10. Special Character Sequence
+11. Special Character Ratio
+
 I will use the following performance measures:
 
 - accuracy = (TP + TN) / TP + TN + FP + FN
@@ -66,6 +80,27 @@ I will use the following performance measures:
 - F-measure = (2 x P x TPR) / P + DR
 
 Once the model is trained, it will sit on the recursive resolver (Unbound) and periodically poll the PiHole cache to classify domains recently seen. Those domains that are classified as malicious will be automatically added to the PiHole block list. I have a dedicated machine that acts as both my PiHole and recursive resolver.
+
+## Results
+
+Unfortunately, I could not replicate the authors' results. My results are as follows for a GBM:
+
+Accuracy: 83.46%
+
+Precision: 92.08%
+
+Recall: 75.71%
+
+F1-score: 83.10%
+
+Confusion matrix:
+
+ |            | True Negative | True Positive |
+|------------|----------------|-----------------|
+| **Predicted Negative** | 342,971 | 27,973 |
+| **Predicted Positive** | 104,447 | 325,636 |
+
+ For this reason, I will also try a neural network for its classification power.
 
 ## References
 
